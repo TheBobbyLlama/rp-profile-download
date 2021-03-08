@@ -1,5 +1,5 @@
 .vs/
 bin/Debug/
-bin/Release/
-!bin/Release/RPProfileDownloader.exe
+bin/Release/*
+!bin/Release/*.exe
 obj/
