@@ -71,7 +71,7 @@ namespace RPProfileDownloader
             // 
             // mniVisitRollplay
             // 
-            this.mniVisitRollplay.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.mniVisitRollplay.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.mniVisitRollplay.Name = "mniVisitRollplay";
             this.mniVisitRollplay.Size = new System.Drawing.Size(182, 22);
             this.mniVisitRollplay.Text = "ESO Rollplay Site";
@@ -104,9 +104,9 @@ namespace RPProfileDownloader
             // 
             // ProfileDownloadMainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(184, 161);
+            this.ClientSize = new System.Drawing.Size(158, 140);
             this.ControlBox = false;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
