@@ -1,5 +1,4 @@
 .vs/
 bin/Debug/
-bin/Release/netcoreapp3.1/profiles.json
-bin/Release/netcoreapp3.1/images/
+bin/Release/netcoreapp3.1/
 obj/
