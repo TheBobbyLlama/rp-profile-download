@@ -1,5 +1,7 @@
 .vs/
 bin/Debug/
 bin/Release/*
+!bin/Release/*.dll
 !bin/Release/*.exe
 obj/
+packages/
