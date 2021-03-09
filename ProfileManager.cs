@@ -24,9 +24,6 @@ namespace RPProfileDownloader
             try
             {
                 string responseBody = await client.GetStringAsync("https://eso-roleplay.firebaseio.com/profiles.json");
-                //File.WriteAllText("profiles.json", responseBody);
-                // TODO - Cache images???
-                //JsonDocument profiles = JsonDocument.Parse(responseBody);
                 StringBuilder output = new StringBuilder();
                 Dictionary<string, ProfileData> profileData = JsonConvert.DeserializeObject<Dictionary<string, ProfileData>>(responseBody);
 
@@ -40,7 +37,7 @@ namespace RPProfileDownloader
                     ConditionalPrint(output, "birthsign", curData.birthsign);
                     ConditionalPrint(output, "aliases", curData.aliases);
                     ConditionalPrint(output, "enemies", curData.enemies);
-                    ConditionalPrint(output, "relationships", curData.organizations);
+                    ConditionalPrint(output, "organizations", curData.organizations);
                     ConditionalPrint(output, "relationships", curData.relationships);
                     ConditionalPrint(output, "residence", curData.residence);
                     ConditionalPrint(output, "description", curData.description);
@@ -51,7 +48,7 @@ namespace RPProfileDownloader
                 output.AppendLine("\t}");
                 output.AppendLine("end");
 
-                File.WriteAllText("ProfileData.lua", output.ToString());
+                File.WriteAllText("RPProfileData.lua", output.ToString());
             }
             catch (HttpRequestException e)
             {
@@ -77,11 +74,11 @@ namespace RPProfileDownloader
             input = Regex.Replace(input, "\"", "\\\""); // Quotes
 
             // MARKDOWN FORMATTING
-            input = Regex.Replace(input, "#####\\s*(.+?\\n)", FormatHeaderText); // Header 5
-            input = Regex.Replace(input, "####\\s*(.+?\\n)", FormatHeaderText); // Header 4
-            input = Regex.Replace(input, "###\\s*(.+?\\n)", FormatHeaderText); // Header 3
-            input = Regex.Replace(input, "##\\s*(.+?\\n)", FormatHeaderText); // Header 2
-            input = Regex.Replace(input, "#\\s*(.+?\\n)", FormatHeaderText); // Header 1
+            input = Regex.Replace(input, "#####\\s*(.+?\\\\n)", FormatHeaderText); // Header 5
+            input = Regex.Replace(input, "####\\s*(.+?\\\\n)", FormatHeaderText); // Header 4
+            input = Regex.Replace(input, "###\\s*(.+?\\\\n)", FormatHeaderText); // Header 3
+            input = Regex.Replace(input, "##\\s*(.+?\\\\n)", FormatHeaderText); // Header 2
+            input = Regex.Replace(input, "#\\s*(.+?\\\\n)", FormatHeaderText); // Header 1
             input = Regex.Replace(input, "{(.+?)}", "$1"); // Custom formatting - {Name} for profile link.
             input = Regex.Replace(input, "\\[(.*?)\\]\\(.*?\\)", "$1"); // Links
             input = Regex.Replace(input, "\\*\\*(.+?)\\*\\*", "|l0:1:1:0:1:C0C0C0|l$1|l"); // Bold (convert to underline)
@@ -91,7 +88,7 @@ namespace RPProfileDownloader
 
         private static string FormatHeaderText(Match input)
         {
-            return "|cFFFFFF" + input.Groups[1].ToString().ToUpper() + "|r";
+            return input.Groups[1].ToString().ToUpper() + "\\n";
         }
 
         public class ProfileData

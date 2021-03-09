@@ -7,7 +7,7 @@
     <ProjectGuid>{BA818BE1-7467-48A7-90F1-F064EE6F613D}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>RPProfileDownloader</RootNamespace>
-    <AssemblyName>RPProfileDownloader</AssemblyName>
+    <AssemblyName>RPProfileMonitor</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
