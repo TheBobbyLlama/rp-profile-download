@@ -34,5 +34,17 @@ namespace RPProfileDownloader.Properties {
                 this["UpdateInterval"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool hasRunBefore {
+            get {
+                return ((bool)(this["hasRunBefore"]));
+            }
+            set {
+                this["hasRunBefore"] = value;
+            }
+        }
     }
 }

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using IWshRuntimeLibrary;
 
 namespace RPProfileDownloader
 {
@@ -30,7 +31,7 @@ namespace RPProfileDownloader
         {
             InitializeComponent();
 
-            foreach(KeyValuePair<string, RunModeType> curPair in intervals)
+            foreach (KeyValuePair<string, RunModeType> curPair in intervals)
             {
                 ToolStripMenuItem newItem = new ToolStripMenuItem(curPair.Key);
                 newItem.Checked = ((int)curPair.Value == Properties.Settings.Default.UpdateInterval);
@@ -40,7 +41,7 @@ namespace RPProfileDownloader
             runMode = (RunModeType)Properties.Settings.Default.UpdateInterval;
 
             // Safety valve - Make sure runMode has a valid value.
-            switch(runMode)
+            switch (runMode)
             {
                 case RunModeType.Instant:
                 case RunModeType.ManualOnly:
@@ -59,6 +60,24 @@ namespace RPProfileDownloader
         {
             notShowMe.ShowBalloonTip(5000);
             ProfileManager.UpdateProfiles();
+        }
+
+        /// <summary>
+        /// Ensures automatic update timer is configured correctly.  Make sure this is only used if runMode is set to automatic!!!
+        /// </summary>
+        public void SetTimer()
+        {
+            if (!tmrClock.Enabled)
+            {
+                tmrClock.Interval = Properties.Settings.Default.UpdateInterval;
+                tmrClock.Start();
+            }
+            else if (tmrClock.Interval != Properties.Settings.Default.UpdateInterval)
+            {
+                tmrClock.Stop();
+                tmrClock.Interval = Properties.Settings.Default.UpdateInterval;
+                tmrClock.Start();
+            }
         }
 
         /// <summary>
@@ -83,26 +102,29 @@ namespace RPProfileDownloader
             else
                 ESOrunning = false;
 
-            if (runMode == RunModeType.Automatic)
-            {
-                if (!tmrClock.Enabled)
-                {
-                    tmrClock.Interval = Properties.Settings.Default.UpdateInterval;
-                    tmrClock.Start();
-                }
-                else if (tmrClock.Interval != Properties.Settings.Default.UpdateInterval)
-                {
-                    tmrClock.Stop();
-                    tmrClock.Interval = Properties.Settings.Default.UpdateInterval;
-                    tmrClock.Start();
-                }
-            }
+            SetTimer();
         }
 
         private void ProfileDownloadMainForm_Load(object sender, EventArgs e)
         {
             // A bit counter-intuitive, but Instant also uses the timer to ensure a grace period for changing settings.
             tmrClock.Interval = Math.Max(Properties.Settings.Default.UpdateInterval, instantTimeout);
+
+            if (!Properties.Settings.Default.hasRunBefore)
+            {
+                if (MessageBox.Show("Thank you for downloading the RP Profile Viewer addon!  This monitor program will need to be used to keep player profile information up to date.\n\nWould you like to place a shortcut on your desktop?", "First Time Setup", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    // Adapted from https://stackoverflow.com/questions/4897655/create-a-shortcut-on-desktop
+                    WshShell wsh = new WshShell();
+                    IWshRuntimeLibrary.IWshShortcut shortcut = wsh.CreateShortcut(
+                        Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\RP Profile Viewer Monitor.lnk") as IWshRuntimeLibrary.IWshShortcut;
+                    shortcut.TargetPath = Application.ExecutablePath;
+                    shortcut.WindowStyle = 1;
+                    shortcut.Description = "Profile Monitor program for the RP Profile Viewer ESO addon.";
+                    shortcut.WorkingDirectory = Application.StartupPath;
+                    shortcut.Save();
+                }
+            }
 
             if (runMode == RunModeType.Instant)
             {
@@ -111,8 +133,17 @@ namespace RPProfileDownloader
                 tmrClock.Interval = instantTimeout;
                 tmrClock.Start();
             }
+            else if (!Properties.Settings.Default.hasRunBefore)
+            {
+                UpdateProfileData();
+
+                if (runMode == RunModeType.Automatic)
+                    SetTimer();
+            }
             else if (runMode == RunModeType.Automatic)
                 DetectESOAndUpdate();
+
+            Properties.Settings.Default.hasRunBefore = true;
         }
 
         private void ProfileDownloadMainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -158,6 +189,7 @@ namespace RPProfileDownloader
                         tmrClock.Stop();
                         tmrClock.Interval = 1000;
                         tmrClock.Start();
+                        mnuTaskbar.Enabled = false;
                     }
                     else
                         Application.Exit();
