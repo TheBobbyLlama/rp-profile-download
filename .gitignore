@@ -5,3 +5,4 @@ bin/Release/*
 !bin/Release/*.exe
 obj/
 packages/
+*.csproj.user
