@@ -166,7 +166,7 @@ local function SetCharacteristicField(fieldValue, fieldId, characteristicCount, 
 		curControl:SetHidden(false)
 		curControl:ClearAnchors()
 		lineCount = estimateFieldSize(fieldValue, lineLength, 1)
-		curControl:SetAnchor(TOPLEFT, curControl:GetParent(), TOPLEFT, 16, 8 + 28 * characteristicCount)
+		curControl:SetAnchor(TOPLEFT, GetControl("RPProfileWindowCharacterPanelXCharacteristicsPicture"), TOPRIGHT, 8, 28 * characteristicCount)
 		curControl:SetAnchor(TOPRIGHT, curControl:GetParent(), TOPRIGHT, 16, 8 + 28 * characteristicCount)
 		curControl:GetNamedChild("Text"):SetText(fieldValue)
 		curControl:SetDimensions(nil, 8 + 24 * lineCount)
@@ -183,15 +183,29 @@ end
 function RPProfileViewer.ShowCharacterInfo(character)
 	local tmpValue
 	local curControl = GetControl("RPProfileWindowCharacterPanel") -- This variable will be reused a lot.
-	local characterData = RPProfileViewer.ProfileData[ConvertNameToKey(character)]
+	local characterKey = ConvertNameToKey(character)
+	local characterData = RPProfileViewer.ProfileData[characterKey]
 	local characteristicCount = 0
 	
 	if (characterData ~= nil) then
+		local imageFactor = 0
 		curControl:SetHidden(false)
 		ZO_Scroll_ResetToTop(curControl)
 		-- Character name
 		curControl = GetControl("RPProfileWindowCharacterPanelXCharacterName")
 		curControl:SetText(characterData["name"])
+		-- Image
+		if (characterData["image"] ~= nil) then
+			local imageControl = GetControl("RPProfileWindowCharacterPanelXCharacteristicsPicture")
+			imageFactor = 1
+			imageControl:SetTexture(string.format("RPProfileViewer/images/thumbs/%s/%s.dds", characterKey, characterData["image"]))
+			imageControl:SetDimensions(200, 200)
+		else
+			local imageControl = GetControl("RPProfileWindowCharacterPanelXCharacteristicsPicture")
+			imageFactor = 0
+			imageControl:SetTexture("")
+			imageControl:SetDimensions(0, 0)
+		end
 		-- Characteristics
 		characteristicCount = characteristicCount + SetCharacteristicField(characterData["aliases"], "RPProfileWindowCharacterPanelXCharacteristicsAliasHolder", characteristicCount, 87)
 		characteristicCount = characteristicCount + SetCharacteristicField(LocalizationHack(characterData["alignment"]), "RPProfileWindowCharacterPanelXCharacteristicsAlignmentHolder", characteristicCount, 85)
@@ -202,8 +216,9 @@ function RPProfileViewer.ShowCharacterInfo(character)
 		characteristicCount = characteristicCount + SetCharacteristicField(characterData["enemies"], "RPProfileWindowCharacterPanelXCharacteristicsEnemyHolder", characteristicCount, 87)
 		characteristicCount = characteristicCount + SetCharacteristicField(characterData["relationships"], "RPProfileWindowCharacterPanelXCharacteristicsRelationshipHolder", characteristicCount, 81)
 		curControl = GetControl("RPProfileWindowCharacterPanelXCharacteristics")
-		if (characteristicCount > 0) then
-			curControl:SetDimensions(nil, 16 + 28 * characteristicCount)
+		if ((characteristicCount > 0) or (imageFactor > 0)) then
+			local sizeMe = math.max(28 * characteristicCount, 200 * imageFactor)
+			curControl:SetDimensions(nil, 16 + sizeMe)
 		else
 			curControl:SetDimensions(nil, 0)
 		end

@@ -107,8 +107,12 @@
 									<Anchor point="TOPLEFT" relativeTo="$(parent)" relativePoint="TOPLEFT" offsetY="40" />
 									<Anchor point="TOPRIGHT" relativeTo="$(parent)" relativePoint="TOPRIGHT" offsetY="40" />
 									<Controls>
+										<Texture name="$(parent)Picture">
+											<Dimensions x="200" y="200" />
+											<Anchor point="TOPLEFT" relativeTo="$(parent)"  offsetX="16" offsetY="8" />
+										</Texture>
 										<Control name="$(parent)AliasHolder">
-											<Anchor point="TOPLEFT" relativeTo="$(parent)" relativePoint="TOPLEFT" offsetX="16" offsetY="8" />
+											<Anchor point="TOPLEFT" relativeTo="$(parent)Picture" relativePoint="TOPRIGHT" offsetX="8" />
 											<Controls>
 												<Label name="$(parent)Label" font="ZoFontGameBold" text="Aliases:">
 													<Anchor point="TOPLEFT" relativeTo="$(parent)" relativePoint="TOPLEFT" />
@@ -259,7 +263,7 @@
 								</Control>
 								
 								<Button name="$(parent)ProfileLink" font="ZoFontGame" text="|c4080C0View Profile on ESO-Rollplay.net|r">
-									<Dimensions y="24" />
+									<Dimensions y="32" />
 									<Anchor point="TOPLEFT" relativeTo="$(parent)Biography" relativePoint="BOTTOMLEFT" offsetY="16" />
 									<Anchor point="TOPRIGHT" relativeTo="$(parent)Biography" relativePoint="BOTTOMRIGHT" offsetY="16" />
 									<OnClicked>
