@@ -22,6 +22,7 @@ namespace RPProfileDownloader
         /// </summary>
         public static async void UpdateProfiles()
         {
+            Dictionary<string, ImageConverter.Data> imageLookup = new Dictionary<string, ImageConverter.Data>();
             working = true;
 
             try
@@ -46,12 +47,20 @@ namespace RPProfileDownloader
                     ConditionalPrint(output, "description", curData.description);
                     ConditionalPrint(output, "biography", curData.biography);
                     //ConditionalPrint(output, "image", curData.image);
+                    if (!String.IsNullOrEmpty(curData.image))
+                    {
+                        string imageHash = curData.image.GetHashCode().ToString();
+                        imageLookup.Add(key, new ImageConverter.Data(imageHash, curData.image));
+                        ConditionalPrint(output, "image", imageHash);
+                    }
+
                     output.AppendLine("\t\t},");
                 }
                 output.AppendLine("\t}");
                 output.AppendLine("end");
 
                 File.WriteAllText("RPProfileData.lua", output.ToString());
+                ImageConverter.createProfileImages(imageLookup);
             }
             catch (HttpRequestException e)
             {
@@ -111,7 +120,7 @@ namespace RPProfileDownloader
 
             public string description { get; set; }
             public string biography { get; set; }
-            public string image { get; set; } // Currently unused.  May change in the future if I want to try DDS conversion?
+            public string image { get; set; }
 
         }
     }

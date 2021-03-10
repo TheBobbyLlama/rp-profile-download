@@ -151,7 +151,16 @@ namespace RPProfileDownloader
                     // Do nothing.
                     break;
                 default:
-                    Application.Exit();
+                    // If the program is busy, wait to exit.
+                    if ((ProfileManager.working) || (ImageConverter.working))
+                    {
+                        runMode = RunModeType.Instant;
+                        tmrClock.Stop();
+                        tmrClock.Interval = 1000;
+                        tmrClock.Start();
+                    }
+                    else
+                        Application.Exit();
                     break;
             }
         }
@@ -197,7 +206,14 @@ namespace RPProfileDownloader
         {
             if (runMode == RunModeType.Automatic)
                 DetectESOAndUpdate();
-            else // Kill the program if we got here any other way.
+            // Keep the program alive if it's still working...
+            else if ((ProfileManager.working) || (ImageConverter.working))
+            {
+                tmrClock.Stop();
+                tmrClock.Interval = 1000;
+                tmrClock.Start();
+            }
+            else // ...otherwise, kill it.
                 Application.Exit();
         }
     }
