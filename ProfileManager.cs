@@ -9,6 +9,9 @@ using Newtonsoft.Json;
 
 namespace RPProfileDownloader
 {
+    /// <summary>
+    /// Used for pulling profile information from the ESO Rollplay system and converting it into a LUA file.
+    /// </summary>
     public static class ProfileManager
     {
         public static bool working = false;
@@ -52,18 +55,19 @@ namespace RPProfileDownloader
             }
             catch (HttpRequestException e)
             {
-                MessageBox.Show(e.Message);
+                MessageBox.Show(e.Message + "\n\nThis error may be due to out of date files; please make sure you have the latest version of the RP Profile Viewer addon.", "RP Profile Monitor Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             working = false;
         }
 
+        /// <summary>
+        /// Helper function for spitting out LUA output.  Only adds to output if it gets a value.
+        /// </summary>
         private static void ConditionalPrint(StringBuilder output, string label, string value)
         {
             if (!String.IsNullOrEmpty(value))
-            {
                 output.AppendLine("\t\t\t[\"" + label + "\"] = \"" + LuaFormat(value) + "\",");
-            }
         }
 
         private static string LuaFormat(string input)
@@ -86,6 +90,9 @@ namespace RPProfileDownloader
             return input;
         }
 
+        /// <summary>
+        /// Helper function for converting "### Header Text" to "HEADER TEXT"
+        /// </summary>
         private static string FormatHeaderText(Match input)
         {
             return input.Groups[1].ToString().ToUpper() + "\\n";
@@ -104,7 +111,7 @@ namespace RPProfileDownloader
 
             public string description { get; set; }
             public string biography { get; set; }
-            public string image { get; set; }
+            public string image { get; set; } // Currently unused.  May change in the future if I want to try DDS conversion?
 
         }
     }

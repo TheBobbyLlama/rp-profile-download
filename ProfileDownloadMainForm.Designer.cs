@@ -44,7 +44,6 @@ namespace RPProfileDownloader
             // 
             // tmrClock
             // 
-            this.tmrClock.Enabled = true;
             this.tmrClock.Interval = 60000;
             this.tmrClock.Tick += new System.EventHandler(this.tmrClock_Tick);
             // 
@@ -65,7 +64,7 @@ namespace RPProfileDownloader
             this.mniUpdateOptions,
             this.mniExit});
             this.mnuTaskbar.Name = "mnuTaskbar";
-            this.mnuTaskbar.Size = new System.Drawing.Size(183, 114);
+            this.mnuTaskbar.Size = new System.Drawing.Size(183, 92);
             this.mnuTaskbar.Opening += new System.ComponentModel.CancelEventHandler(this.mnuTaskbar_Opening);
             this.mnuTaskbar.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.mnuTaskbar_ItemClicked);
             // 

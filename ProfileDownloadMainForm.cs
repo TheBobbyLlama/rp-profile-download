@@ -13,39 +13,59 @@ namespace RPProfileDownloader
 {
     public partial class ProfileDownloadMainForm : Form
     {
-        private bool ESOrunning = false;
-        private readonly int minTimer = 10000; // The minimum timer value.  If the update interval is lower than this, the program will terminate.
-        private readonly KeyValuePair<string, int>[] intervals = {
-                new KeyValuePair<string, int>("No", 0),
-                new KeyValuePair<string, int>("Manual Only", -1),
-                new KeyValuePair<string, int>("Automatic", 60000),
+        private enum RunModeType {
+            Instant = 0,
+            ManualOnly = -1,
+            Automatic = 10000,
         };
+        private readonly int instantTimeout = 10000; // Used when the run mode is set to Instant - gives a grace period
+        private readonly KeyValuePair<string, RunModeType>[] intervals = {
+                new KeyValuePair<string, RunModeType>("No", RunModeType.Instant),
+                new KeyValuePair<string, RunModeType>("Manual Only", RunModeType.ManualOnly),
+                new KeyValuePair<string, RunModeType>("Automatic", RunModeType.Automatic),
+        };
+        private bool ESOrunning = false;
+        private RunModeType runMode = RunModeType.Automatic;
         public ProfileDownloadMainForm()
         {
             InitializeComponent();
-            // Use minTimer here to force the program to stay open for a time, so the user can change the interval if they want.
-            tmrClock.Interval = Math.Max(Properties.Settings.Default.UpdateInterval, minTimer);
 
-            foreach(KeyValuePair<string, int> curPair in intervals)
+            foreach(KeyValuePair<string, RunModeType> curPair in intervals)
             {
                 ToolStripMenuItem newItem = new ToolStripMenuItem(curPair.Key);
-                newItem.Checked = (curPair.Value == Properties.Settings.Default.UpdateInterval);
+                newItem.Checked = ((int)curPair.Value == Properties.Settings.Default.UpdateInterval);
                 mnuUpdateIntervals.Items.Add(newItem);
+            }
+
+            runMode = (RunModeType)Properties.Settings.Default.UpdateInterval;
+
+            // Safety valve - Make sure runMode has a valid value.
+            switch(runMode)
+            {
+                case RunModeType.Instant:
+                case RunModeType.ManualOnly:
+                case RunModeType.Automatic:
+                    break;
+                default:
+                    runMode = RunModeType.Automatic;
+                    break;
             }
         }
 
         /// <summary>
-        /// Determines if profile data needs to be updated.
+        /// Fires any necessary logic for updating profile data.
         /// </summary>
-        public void TryUpdateProfileData()
+        public void UpdateProfileData()
         {
-            // Force an update if the interval is below min (i.e set to Never)
-            if ((Properties.Settings.Default.UpdateInterval >= 0) && (Properties.Settings.Default.UpdateInterval <= minTimer))
-            {
-                UpdateProfileData();
-                return;
-            }
+            notShowMe.ShowBalloonTip(5000);
+            ProfileManager.UpdateProfiles();
+        }
 
+        /// <summary>
+        /// Used by Automatic run mode, updates profile data if ESO has been started.
+        /// </summary>
+        public void DetectESOAndUpdate()
+        {
             // Check to see if ESO is running.
             Process[] instances = Process.GetProcessesByName("eso64");
 
@@ -62,20 +82,37 @@ namespace RPProfileDownloader
             }
             else
                 ESOrunning = false;
-        }
 
-        /// <summary>
-        /// Fires any necessary logic for updating profile data.
-        /// </summary>
-        public void UpdateProfileData()
-        {
-            notShowMe.ShowBalloonTip(5000);
-            ProfileManager.UpdateProfiles();
+            if (runMode == RunModeType.Automatic)
+            {
+                if (!tmrClock.Enabled)
+                {
+                    tmrClock.Interval = Properties.Settings.Default.UpdateInterval;
+                    tmrClock.Start();
+                }
+                else if (tmrClock.Interval != Properties.Settings.Default.UpdateInterval)
+                {
+                    tmrClock.Stop();
+                    tmrClock.Interval = Properties.Settings.Default.UpdateInterval;
+                    tmrClock.Start();
+                }
+            }
         }
 
         private void ProfileDownloadMainForm_Load(object sender, EventArgs e)
         {
-            TryUpdateProfileData();
+            // A bit counter-intuitive, but Instant also uses the timer to ensure a grace period for changing settings.
+            tmrClock.Interval = Math.Max(Properties.Settings.Default.UpdateInterval, instantTimeout);
+
+            if (runMode == RunModeType.Instant)
+            {
+                // Perform an immediate update, then timeout.
+                UpdateProfileData();
+                tmrClock.Interval = instantTimeout;
+                tmrClock.Start();
+            }
+            else if (runMode == RunModeType.Automatic)
+                DetectESOAndUpdate();
         }
 
         private void ProfileDownloadMainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -102,14 +139,15 @@ namespace RPProfileDownloader
                     {
                         UpdateProfileData();
 
-                        if (Properties.Settings.Default.UpdateInterval > minTimer)
+                        // Reset the clock if running automatically.
+                        if (runMode == RunModeType.Automatic)
                         {
                             tmrClock.Stop();
                             tmrClock.Start();
                         }
                     }
                     break;
-                case "Update Interval":
+                case "Update Options":
                     // Do nothing.
                     break;
                 default:
@@ -123,50 +161,44 @@ namespace RPProfileDownloader
         /// </summary>
         private void mnuUpdateIntervals_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            KeyValuePair<string, int> result = intervals.FirstOrDefault(item => item.Key == e.ClickedItem.Text);
+            KeyValuePair<string, RunModeType> result = intervals.FirstOrDefault(item => item.Key == e.ClickedItem.Text);
 
-            if ((e.ClickedItem.Text == "No") && (MessageBox.Show("Setting updates to 'No' will make the updater run immediately and then close.  If you select this option, you will need to run the program yourself whenever you want to update profile information.\n\nIf you want to change this setting later, you will have 10 seconds whenever the program runs.\n\nAre you sure you want to proceed?", "Warning!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No))
+            if ((result.Value == RunModeType.Instant) && (MessageBox.Show("Setting updates to 'No' will make the updater run immediately and then close.  If you select this option, you will need to run the program yourself whenever you want to update profile information.\n\nIf you want to change this setting later, you will have 10 seconds whenever the program runs.\n\nAre you sure you want to proceed?", "Warning!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No))
                     return;
 
-            Properties.Settings.Default.UpdateInterval = result.Value;
+            runMode = result.Value;
+            Properties.Settings.Default.UpdateInterval = (int)runMode;
 
             foreach (ToolStripMenuItem curItem in mnuUpdateIntervals.Items)
-            {
                 curItem.Checked = (result.Key == curItem.Text);
-            }
 
-            if (result.Value < 0)
+            switch(runMode)
             {
-                tmrClock.Stop();
-            }
-            else if (result.Value <= minTimer)
-            {
-                TryUpdateProfileData();
-                Application.Exit();
+                case RunModeType.Instant:
+                    // Perform an immediate update, then timeout.
+                    tmrClock.Stop();
+                    UpdateProfileData();
+                    tmrClock.Interval = instantTimeout;
+                    tmrClock.Start();
+                    break;
+                case RunModeType.ManualOnly:
+                    tmrClock.Stop();
+                    break;
+                default:
+                    DetectESOAndUpdate();
+                    break;
             }
         }
 
         /// <summary>
-        /// Handles the timing of updating profile data.  An interval of minTimer or less means the program shouldn't be looking for updates and should close.
+        /// Handles the timing of updating profile data.
         /// </summary>
         private void tmrClock_Tick(object sender, EventArgs e)
         {
-            // If the interval is set to a valid value, try pulling the data before continuing.
-            if (Properties.Settings.Default.UpdateInterval > minTimer)
-            {
-                TryUpdateProfileData();
-
-                if (tmrClock.Interval != Properties.Settings.Default.UpdateInterval)
-                {
-                    tmrClock.Stop();
-                    tmrClock.Interval = Properties.Settings.Default.UpdateInterval;
-                    tmrClock.Start();
-                }
-            }
-            else // Kill the program.
-            {
+            if (runMode == RunModeType.Automatic)
+                DetectESOAndUpdate();
+            else // Kill the program if we got here any other way.
                 Application.Exit();
-            }
         }
     }
 }
