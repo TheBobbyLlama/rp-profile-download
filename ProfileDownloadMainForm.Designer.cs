@@ -36,7 +36,7 @@ namespace RPProfileDownloader
             this.mnuTaskbar = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mniVisitRollplay = new System.Windows.Forms.ToolStripMenuItem();
             this.mniUpdateNow = new System.Windows.Forms.ToolStripMenuItem();
-            this.mniUpdateInterval = new System.Windows.Forms.ToolStripMenuItem();
+            this.mniUpdateOptions = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuUpdateIntervals = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mniExit = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuTaskbar.SuspendLayout();
@@ -62,10 +62,10 @@ namespace RPProfileDownloader
             this.mnuTaskbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mniVisitRollplay,
             this.mniUpdateNow,
-            this.mniUpdateInterval,
+            this.mniUpdateOptions,
             this.mniExit});
             this.mnuTaskbar.Name = "mnuTaskbar";
-            this.mnuTaskbar.Size = new System.Drawing.Size(183, 92);
+            this.mnuTaskbar.Size = new System.Drawing.Size(183, 114);
             this.mnuTaskbar.Opening += new System.ComponentModel.CancelEventHandler(this.mnuTaskbar_Opening);
             this.mnuTaskbar.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.mnuTaskbar_ItemClicked);
             // 
@@ -82,17 +82,17 @@ namespace RPProfileDownloader
             this.mniUpdateNow.Size = new System.Drawing.Size(182, 22);
             this.mniUpdateNow.Text = "Update Profiles Now";
             // 
-            // mniUpdateInterval
+            // mniUpdateOptions
             // 
-            this.mniUpdateInterval.DropDown = this.mnuUpdateIntervals;
-            this.mniUpdateInterval.Name = "mniUpdateInterval";
-            this.mniUpdateInterval.Size = new System.Drawing.Size(182, 22);
-            this.mniUpdateInterval.Text = "Update Interval";
+            this.mniUpdateOptions.DropDown = this.mnuUpdateIntervals;
+            this.mniUpdateOptions.Name = "mniUpdateOptions";
+            this.mniUpdateOptions.Size = new System.Drawing.Size(182, 22);
+            this.mniUpdateOptions.Text = "Update Options";
             // 
             // mnuUpdateIntervals
             // 
             this.mnuUpdateIntervals.Name = "mnuUpdateIntervals";
-            this.mnuUpdateIntervals.OwnerItem = this.mniUpdateInterval;
+            this.mnuUpdateIntervals.OwnerItem = this.mniUpdateOptions;
             this.mnuUpdateIntervals.Size = new System.Drawing.Size(61, 4);
             this.mnuUpdateIntervals.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.mnuUpdateIntervals_ItemClicked);
             // 
@@ -129,7 +129,7 @@ namespace RPProfileDownloader
         private System.Windows.Forms.ContextMenuStrip mnuTaskbar;
         private System.Windows.Forms.ToolStripMenuItem mniUpdateNow;
         private System.Windows.Forms.ToolStripMenuItem mniExit;
-        private System.Windows.Forms.ToolStripMenuItem mniUpdateInterval;
+        private System.Windows.Forms.ToolStripMenuItem mniUpdateOptions;
         private System.Windows.Forms.ContextMenuStrip mnuUpdateIntervals;
         private System.Windows.Forms.ToolStripMenuItem mniVisitRollplay;
     }

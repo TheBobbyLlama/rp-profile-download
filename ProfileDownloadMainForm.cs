@@ -16,11 +16,9 @@ namespace RPProfileDownloader
         private bool ESOrunning = false;
         private readonly int minTimer = 10000; // The minimum timer value.  If the update interval is lower than this, the program will terminate.
         private readonly KeyValuePair<string, int>[] intervals = {
-                new KeyValuePair<string, int>("Never", 0),
-                new KeyValuePair<string, int>("1 Minute", 60000),
-                new KeyValuePair<string, int>("5 Minutes", 300000),
-                new KeyValuePair<string, int>("30 Minutes", 1800000),
-                new KeyValuePair<string, int>("1 Hour", 3600000)
+                new KeyValuePair<string, int>("No", 0),
+                new KeyValuePair<string, int>("Manual Only", -1),
+                new KeyValuePair<string, int>("Automatic", 60000),
         };
         public ProfileDownloadMainForm()
         {
@@ -42,7 +40,7 @@ namespace RPProfileDownloader
         public void TryUpdateProfileData()
         {
             // Force an update if the interval is below min (i.e set to Never)
-            if (Properties.Settings.Default.UpdateInterval <= minTimer)
+            if ((Properties.Settings.Default.UpdateInterval >= 0) && (Properties.Settings.Default.UpdateInterval <= minTimer))
             {
                 UpdateProfileData();
                 return;
@@ -103,8 +101,12 @@ namespace RPProfileDownloader
                     if (!ProfileManager.working)
                     {
                         UpdateProfileData();
-                        tmrClock.Stop();
-                        tmrClock.Start();
+
+                        if (Properties.Settings.Default.UpdateInterval > minTimer)
+                        {
+                            tmrClock.Stop();
+                            tmrClock.Start();
+                        }
                     }
                     break;
                 case "Update Interval":
@@ -123,7 +125,7 @@ namespace RPProfileDownloader
         {
             KeyValuePair<string, int> result = intervals.FirstOrDefault(item => item.Key == e.ClickedItem.Text);
 
-            if ((result.Value <= minTimer) && (MessageBox.Show("Setting the update timer to 'Never' will not allow this program to download profile information automatically!\n\nIf you select this option, you will need to run the program yourself to update profile information.\n\nAre you sure you want to proceed?", "Warning!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No))
+            if ((e.ClickedItem.Text == "No") && (MessageBox.Show("Setting updates to 'No' will make the updater run immediately and then close.  If you select this option, you will need to run the program yourself whenever you want to update profile information.\n\nIf you want to change this setting later, you will have 10 seconds whenever the program runs.\n\nAre you sure you want to proceed?", "Warning!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No))
                     return;
 
             Properties.Settings.Default.UpdateInterval = result.Value;
@@ -133,7 +135,11 @@ namespace RPProfileDownloader
                 curItem.Checked = (result.Key == curItem.Text);
             }
 
-            if (result.Value <= minTimer)
+            if (result.Value < 0)
+            {
+                tmrClock.Stop();
+            }
+            else if (result.Value <= minTimer)
             {
                 TryUpdateProfileData();
                 Application.Exit();

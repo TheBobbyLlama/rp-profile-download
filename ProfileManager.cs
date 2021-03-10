@@ -42,7 +42,7 @@ namespace RPProfileDownloader
                     ConditionalPrint(output, "residence", curData.residence);
                     ConditionalPrint(output, "description", curData.description);
                     ConditionalPrint(output, "biography", curData.biography);
-                    ConditionalPrint(output, "image", curData.image);
+                    //ConditionalPrint(output, "image", curData.image);
                     output.AppendLine("\t\t},");
                 }
                 output.AppendLine("\t}");
@@ -74,11 +74,11 @@ namespace RPProfileDownloader
             input = Regex.Replace(input, "\"", "\\\""); // Quotes
 
             // MARKDOWN FORMATTING
-            input = Regex.Replace(input, "#####\\s*(.+?\\\\n)", FormatHeaderText); // Header 5
-            input = Regex.Replace(input, "####\\s*(.+?\\\\n)", FormatHeaderText); // Header 4
-            input = Regex.Replace(input, "###\\s*(.+?\\\\n)", FormatHeaderText); // Header 3
-            input = Regex.Replace(input, "##\\s*(.+?\\\\n)", FormatHeaderText); // Header 2
-            input = Regex.Replace(input, "#\\s*(.+?\\\\n)", FormatHeaderText); // Header 1
+            input = Regex.Replace(input, "#####\\s*(.+?)\\\\n", FormatHeaderText); // Header 5
+            input = Regex.Replace(input, "####\\s*(.+?)\\\\n", FormatHeaderText); // Header 4
+            input = Regex.Replace(input, "###\\s*(.+?)\\\\n", FormatHeaderText); // Header 3
+            input = Regex.Replace(input, "##\\s*(.+?)\\\\n", FormatHeaderText); // Header 2
+            input = Regex.Replace(input, "#\\s*(.+?)\\\\n", FormatHeaderText); // Header 1
             input = Regex.Replace(input, "{(.+?)}", "$1"); // Custom formatting - {Name} for profile link.
             input = Regex.Replace(input, "\\[(.*?)\\]\\(.*?\\)", "$1"); // Links
             input = Regex.Replace(input, "\\*\\*(.+?)\\*\\*", "|l0:1:1:0:1:C0C0C0|l$1|l"); // Bold (convert to underline)
