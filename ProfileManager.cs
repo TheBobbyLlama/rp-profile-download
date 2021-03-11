@@ -22,7 +22,7 @@ namespace RPProfileDownloader
         /// </summary>
         public static async void UpdateProfiles()
         {
-            Dictionary<string, ImageConverter.Data> imageLookup = new Dictionary<string, ImageConverter.Data>();
+            Dictionary<string, ImageConverter.ImageData> imageLookup = new Dictionary<string, ImageConverter.ImageData>();
             working = true;
 
             try
@@ -46,11 +46,12 @@ namespace RPProfileDownloader
                     ConditionalPrint(output, "residence", curData.residence);
                     ConditionalPrint(output, "description", curData.description);
                     ConditionalPrint(output, "biography", curData.biography);
-                    //ConditionalPrint(output, "image", curData.image);
+
                     if (!String.IsNullOrEmpty(curData.image))
                     {
-                        string imageHash = curData.image.GetHashCode().ToString();
-                        imageLookup.Add(key, new ImageConverter.Data(imageHash, curData.image));
+                        // Use a hash code for our image, to make it easier to track changes in the future.
+                        string imageHash = Math.Abs(curData.image.GetHashCode()).ToString();
+                        imageLookup.Add(key, new ImageConverter.ImageData(imageHash, curData.image));
                         ConditionalPrint(output, "image", imageHash);
                     }
 
