@@ -27,6 +27,7 @@ namespace RPProfileDownloader
         };
         private bool ESOrunning = false;
         private RunModeType runMode = RunModeType.Automatic;
+        private DateTime dayTimer = DateTime.UtcNow;
         public ProfileDownloadMainForm()
         {
             InitializeComponent();
@@ -85,22 +86,30 @@ namespace RPProfileDownloader
         /// </summary>
         public void DetectESOAndUpdate()
         {
-            // Check to see if ESO is running.
-            Process[] instances = Process.GetProcessesByName("eso64");
-
-            // Failsafe - try for 32-bit version.
-            if (instances.Length == 0)
-                instances = Process.GetProcessesByName("eso");
-
-            if (instances.Length > 0)
+            if (DateTime.UtcNow.Day != dayTimer.Day)
             {
-                if (!ESOrunning)
-                    UpdateProfileData();
-
-                ESOrunning = true;
+                UpdateProfileData();
+                dayTimer = DateTime.UtcNow;
             }
             else
-                ESOrunning = false;
+            {
+                // Check to see if ESO is running.
+                Process[] instances = Process.GetProcessesByName("eso64");
+
+                // Failsafe - try for 32-bit version.
+                if (instances.Length == 0)
+                    instances = Process.GetProcessesByName("eso");
+
+                if (instances.Length > 0)
+                {
+                    if (!ESOrunning)
+                        UpdateProfileData();
+
+                    ESOrunning = true;
+                }
+                else
+                    ESOrunning = false;
+            }
 
             SetTimer();
         }
