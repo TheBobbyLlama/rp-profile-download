@@ -13,7 +13,7 @@ namespace RPProfileDownloader
 {
     public static class ImageConverter
     {
-        public static bool working = false;
+        public static int workingCount = 0;
         private static readonly HttpClient client = new HttpClient();
 
         /// <summary>
@@ -21,7 +21,7 @@ namespace RPProfileDownloader
         /// </summary>
         public static void createProfileImages(Dictionary<string, ImageData> input)
         {
-            working = true;
+            workingCount = input.Count;
 
             foreach (string key in input.Keys)
             {
@@ -33,16 +33,20 @@ namespace RPProfileDownloader
 
                 if (!File.Exists(String.Format("{0}/{1}", thumbDirectory, thumbFile)))
                 {
+                    // Clean out any old images that are hanging around.
                     foreach (string curFile in Directory.GetFiles(thumbDirectory))
                         File.Delete(curFile);
 
                     ProcessImage(key, input[key].imageUrl, input[key].hashString);
                 }
+                else
+                    workingCount--;
             }
-
-            working = false;
         }
 
+        /// <summary>
+        /// Processes a single profile image asynchronously.
+        /// </summary>
         public static async void ProcessImage(string key, string url, string hash)
         {
             Stream result = await client.GetStreamAsync(url);
@@ -58,7 +62,9 @@ namespace RPProfileDownloader
             curImage.AdaptiveResize(256, 256);
 
             curImage.Write(String.Format("../images/thumbs/{0}/{1}.dds", key, hash), curImage.HasAlpha ? MagickFormat.Dxt5 : MagickFormat.Dxt1);
+            workingCount--;
         }
+
         public class ImageData
         {
             public string hashString { get; set; }

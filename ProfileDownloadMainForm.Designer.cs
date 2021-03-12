@@ -115,7 +115,7 @@ namespace RPProfileDownloader
             this.Text = "ESO - RP Profile Downloader";
             this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ProfileDownloadMainForm_FormClosing);
-            this.Load += new System.EventHandler(this.ProfileDownloadMainForm_Load);
+            this.Shown += new System.EventHandler(this.ProfileDownloadMainForm_Shown);
             this.mnuTaskbar.ResumeLayout(false);
             this.ResumeLayout(false);
 

@@ -65,7 +65,7 @@ namespace RPProfileDownloader
             }
             catch (HttpRequestException e)
             {
-                MessageBox.Show(e.Message + "\n\nThis error may be due to out of date files; please make sure you have the latest version of the RP Profile Viewer addon.", "RP Profile Monitor Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(e.Message, "An Error Occurred While Updating!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             working = false;
@@ -94,6 +94,7 @@ namespace RPProfileDownloader
             input = Regex.Replace(input, "##\\s*(.+?)\\\\n", FormatHeaderText); // Header 2
             input = Regex.Replace(input, "#\\s*(.+?)\\\\n", FormatHeaderText); // Header 1
             input = Regex.Replace(input, "{(.+?)}", "$1"); // Custom formatting - {Name} for profile link.
+            input = Regex.Replace(input, "!(\\[.*?\\])\\(.*?\\)", "$1"); // Images
             input = Regex.Replace(input, "\\[(.*?)\\]\\(.*?\\)", "$1"); // Links
             input = Regex.Replace(input, "\\*\\*(.+?)\\*\\*", "|l0:1:1:0:1:C0C0C0|l$1|l"); // Bold (convert to underline)
             input = Regex.Replace(input, "~~(.+?)~~", "|l0:1:0:-25%:2:C0C0C0|l$1|l"); // Strikethrough

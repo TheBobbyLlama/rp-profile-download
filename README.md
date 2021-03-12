@@ -21,4 +21,4 @@ The Profile Monitor has 3 modes it can operate in:
 
 1. **No Updates** - In this mode, the program will immediately download profile information, and then it will close after a 10 second grace period.  This grace period is so the user can select another update mode if desired.
 2. **Manual Only** - The Profile Monitor will sit idle.  The user may initiate profile updates using *Update Profiles Now*, but the program otherwise does nothing.
-3. **Automatic** (default) - The Profile Monitor will sit idle, listening for the ESO game client.  When it detects that the game client has been started, it will download profile information.
+3. **Automatic** (default) - The Profile Monitor will download profile information immediately, and then sit idle, listening for the ESO game client.  When it detects that the game client has been started, it will download profile information again.  In addition, it will download profile updates daily at midnight.

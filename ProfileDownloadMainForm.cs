@@ -19,7 +19,7 @@ namespace RPProfileDownloader
             ManualOnly = -1,
             Automatic = 10000,
         };
-        private readonly int instantTimeout = 10000; // Used when the run mode is set to Instant - gives a grace period
+        private readonly int instantTimeout = 10000; // Used when the run mode is set to Instant - gives a grace period for changing the update setting.
         private readonly KeyValuePair<string, RunModeType>[] intervals = {
                 new KeyValuePair<string, RunModeType>("No", RunModeType.Instant),
                 new KeyValuePair<string, RunModeType>("Manual Only", RunModeType.ManualOnly),
@@ -27,11 +27,13 @@ namespace RPProfileDownloader
         };
         private bool ESOrunning = false;
         private RunModeType runMode = RunModeType.Automatic;
-        private DateTime dayTimer = DateTime.UtcNow;
+        private int dayTimer = DateTime.Now.Day;
+
         public ProfileDownloadMainForm()
         {
             InitializeComponent();
 
+            // Build Update Option items.
             foreach (KeyValuePair<string, RunModeType> curPair in intervals)
             {
                 ToolStripMenuItem newItem = new ToolStripMenuItem(curPair.Key);
@@ -64,32 +66,50 @@ namespace RPProfileDownloader
         }
 
         /// <summary>
-        /// Ensures automatic update timer is configured correctly.  Make sure this is only used if runMode is set to automatic!!!
+        /// Ensures update timer is configured correctly.
         /// </summary>
-        public void SetTimer()
+        public void SetTimer(int forceInterval = 0)
         {
-            if (!tmrClock.Enabled)
-            {
-                tmrClock.Interval = Properties.Settings.Default.UpdateInterval;
-                tmrClock.Start();
-            }
-            else if (tmrClock.Interval != Properties.Settings.Default.UpdateInterval)
+            if (forceInterval > 0)
             {
                 tmrClock.Stop();
-                tmrClock.Interval = Properties.Settings.Default.UpdateInterval;
+                tmrClock.Interval = forceInterval;
                 tmrClock.Start();
+            }
+            else if (runMode == RunModeType.ManualOnly)
+            {
+                tmrClock.Stop();
+            }
+            else
+            {
+                int interval = Math.Max(Properties.Settings.Default.UpdateInterval, instantTimeout);
+
+                if (!tmrClock.Enabled)
+                {
+                    tmrClock.Interval = interval;
+                    tmrClock.Start();
+                }
+                else if ((tmrClock.Interval != interval))
+                {
+                    tmrClock.Stop();
+                    tmrClock.Interval = interval;
+                    tmrClock.Start();
+                }
             }
         }
 
         /// <summary>
-        /// Used by Automatic run mode, updates profile data if ESO has been started.
+        /// Used by Automatic run mode, updates profile data if ESO has been started or the date has changed.
         /// </summary>
-        public void DetectESOAndUpdate()
+        public void TryAutomaticUpdate()
         {
-            if (DateTime.UtcNow.Day != dayTimer.Day)
+            int curDay = DateTime.Now.Day;
+
+            // Download midnight update if applicable.
+            if (dayTimer != curDay)
             {
                 UpdateProfileData();
-                dayTimer = DateTime.UtcNow;
+                dayTimer = curDay;
             }
             else
             {
@@ -114,11 +134,16 @@ namespace RPProfileDownloader
             SetTimer();
         }
 
-        private void ProfileDownloadMainForm_Load(object sender, EventArgs e)
+        /// <summary>
+        /// Helper function to determine if update tasks are still running.
+        /// </summary>
+        private bool IsDoingUpdate()
         {
-            // A bit counter-intuitive, but Instant also uses the timer to ensure a grace period for changing settings.
-            tmrClock.Interval = Math.Max(Properties.Settings.Default.UpdateInterval, instantTimeout);
+            return ((ProfileManager.working) || (ImageConverter.workingCount > 0));
+        }
 
+        private void ProfileDownloadMainForm_Shown(object sender, EventArgs e)
+        {
             if (!Properties.Settings.Default.hasRunBefore)
             {
                 if (MessageBox.Show("Thank you for downloading the RP Profile Viewer addon!  This monitor program will need to be used to keep player profile information up to date.\n\nWould you like to place a shortcut on your desktop?", "First Time Setup", MessageBoxButtons.YesNo) == DialogResult.Yes)
@@ -133,25 +158,13 @@ namespace RPProfileDownloader
                     shortcut.WorkingDirectory = Application.StartupPath;
                     shortcut.Save();
                 }
-            }
 
-            if (runMode == RunModeType.Instant)
-            {
-                // Perform an immediate update, then timeout.
                 UpdateProfileData();
-                tmrClock.Interval = instantTimeout;
-                tmrClock.Start();
             }
-            else if (!Properties.Settings.Default.hasRunBefore)
-            {
+            else if (runMode != RunModeType.ManualOnly)
                 UpdateProfileData();
 
-                if (runMode == RunModeType.Automatic)
-                    SetTimer();
-            }
-            else if (runMode == RunModeType.Automatic)
-                DetectESOAndUpdate();
-
+            SetTimer();
             Properties.Settings.Default.hasRunBefore = true;
         }
 
@@ -162,7 +175,7 @@ namespace RPProfileDownloader
 
         private void mnuTaskbar_Opening(object sender, CancelEventArgs e)
         {
-            mniUpdateNow.Enabled = !ProfileManager.working;
+            mniUpdateNow.Enabled = !IsDoingUpdate();
         }
 
         private void mnuTaskbar_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -174,30 +187,22 @@ namespace RPProfileDownloader
                     Process.Start(new ProcessStartInfo("cmd", $"/c start https://eso-rollplay.net") { CreateNoWindow = true });
                     break;
                 case "Update Profiles Now":
-                    // Only update if the manager isn't already working.
-                    if (!ProfileManager.working)
+                    if (!IsDoingUpdate())
                     {
                         UpdateProfileData();
-
-                        // Reset the clock if running automatically.
-                        if (runMode == RunModeType.Automatic)
-                        {
-                            tmrClock.Stop();
-                            tmrClock.Start();
-                        }
+                        SetTimer(Properties.Settings.Default.UpdateInterval);
                     }
                     break;
                 case "Update Options":
                     // Do nothing.
                     break;
+                // Default behavior: Kill program.
                 default:
                     // If the program is busy, wait to exit.
-                    if ((ProfileManager.working) || (ImageConverter.working))
+                    if (IsDoingUpdate())
                     {
                         runMode = RunModeType.Instant;
-                        tmrClock.Stop();
-                        tmrClock.Interval = 1000;
-                        tmrClock.Start();
+                        SetTimer(1000);
                         mnuTaskbar.Enabled = false;
                     }
                     else
@@ -226,16 +231,14 @@ namespace RPProfileDownloader
             {
                 case RunModeType.Instant:
                     // Perform an immediate update, then timeout.
-                    tmrClock.Stop();
                     UpdateProfileData();
-                    tmrClock.Interval = instantTimeout;
-                    tmrClock.Start();
+                    SetTimer();
                     break;
                 case RunModeType.ManualOnly:
-                    tmrClock.Stop();
+                    SetTimer();
                     break;
                 default:
-                    DetectESOAndUpdate();
+                    TryAutomaticUpdate();
                     break;
             }
         }
@@ -246,14 +249,10 @@ namespace RPProfileDownloader
         private void tmrClock_Tick(object sender, EventArgs e)
         {
             if (runMode == RunModeType.Automatic)
-                DetectESOAndUpdate();
+                TryAutomaticUpdate();
             // Keep the program alive if it's still working...
-            else if ((ProfileManager.working) || (ImageConverter.working))
-            {
-                tmrClock.Stop();
-                tmrClock.Interval = 1000;
-                tmrClock.Start();
-            }
+            else if (IsDoingUpdate())
+                SetTimer(1000);
             else // ...otherwise, kill it.
                 Application.Exit();
         }
