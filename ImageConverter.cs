@@ -49,19 +49,24 @@ namespace RPProfileDownloader
         /// </summary>
         public static async void ProcessImage(string key, string url, string hash)
         {
-            Stream result = await client.GetStreamAsync(url);
-            MagickImage curImage = new MagickImage(result);
+            try
+            {
+                Stream result = await client.GetStreamAsync(url);
+                MagickImage curImage = new MagickImage(result);
 
-            // Force to square.
-            if (curImage.Height > curImage.Width)
-                curImage.ChopVertical(curImage.Width, curImage.Width);
-            else if (curImage.Height < curImage.Width)
-                curImage.ChopHorizontal(curImage.Height, curImage.Height);
+                // Force to square.
+                if (curImage.Height > curImage.Width)
+                    curImage.ChopVertical(curImage.Width, curImage.Width);
+                else if (curImage.Height < curImage.Width)
+                    curImage.ChopHorizontal(curImage.Height, curImage.Height);
 
-            // Addon will display 200x200, size to the next highest power of 2.
-            curImage.AdaptiveResize(256, 256);
+                // Addon will display 200x200, size to the next highest power of 2.
+                curImage.AdaptiveResize(256, 256);
 
-            curImage.Write(String.Format("../images/thumbs/{0}/{1}.dds", key, hash), curImage.HasAlpha ? MagickFormat.Dxt5 : MagickFormat.Dxt1);
+                curImage.Write(String.Format("../images/thumbs/{0}/{1}.dds", key, hash), curImage.HasAlpha ? MagickFormat.Dxt5 : MagickFormat.Dxt1);
+            }
+            catch { }
+
             workingCount--;
         }
 

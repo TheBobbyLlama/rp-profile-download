@@ -63,7 +63,7 @@ namespace RPProfileDownloader
                 File.WriteAllText("RPProfileData.lua", output.ToString());
                 ImageConverter.createProfileImages(imageLookup);
             }
-            catch (HttpRequestException e)
+            catch (Exception e)
             {
                 MessageBox.Show(e.Message, "An Error Occurred While Updating!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -94,10 +94,10 @@ namespace RPProfileDownloader
             input = Regex.Replace(input, "##\\s*(.+?)\\\\n", FormatHeaderText); // Header 2
             input = Regex.Replace(input, "#\\s*(.+?)\\\\n", FormatHeaderText); // Header 1
             input = Regex.Replace(input, "{(.+?)}", "$1"); // Custom formatting - {Name} for profile link.
-            input = Regex.Replace(input, "!(\\[.*?\\])\\(.*?\\)", "$1"); // Images
+            input = Regex.Replace(input, "!(\\[.*?\\])\\(.*?\\)", "[$1]"); // Images
             input = Regex.Replace(input, "\\[(.*?)\\]\\(.*?\\)", "$1"); // Links
-            input = Regex.Replace(input, "\\*\\*(.+?)\\*\\*", "|l0:1:1:0:1:C0C0C0|l$1|l"); // Bold (convert to underline)
-            input = Regex.Replace(input, "~~(.+?)~~", "|l0:1:0:-25%:2:C0C0C0|l$1|l"); // Strikethrough
+            input = Regex.Replace(input, "\\*\\*(.+?)\\*\\*", "*$1*"); // Bold (convert to underline)
+            input = Regex.Replace(input, "~~(.+?)~~", "-$1-"); // Strikethrough
             return input;
         }
 
@@ -123,7 +123,6 @@ namespace RPProfileDownloader
             public string description { get; set; }
             public string biography { get; set; }
             public string image { get; set; }
-
         }
     }
 }
