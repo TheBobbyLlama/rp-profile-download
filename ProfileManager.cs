@@ -86,6 +86,8 @@ namespace RPProfileDownloader
             input = Regex.Replace(input, "\\|", "||"); // Pipes
             input = Regex.Replace(input, "\n", "\\n"); // New Lines
             input = Regex.Replace(input, "\"", "\\\""); // Quotes
+            input = Regex.Replace(input, "&lt;", "<");
+            input = Regex.Replace(input, "&gt;", ">");
 
             // MARKDOWN FORMATTING
             input = Regex.Replace(input, "#####\\s*(.+?)\\\\n", FormatHeaderText); // Header 5
@@ -96,7 +98,7 @@ namespace RPProfileDownloader
             input = Regex.Replace(input, "{(.+?)}", "$1"); // Custom formatting - {Name} for profile link.
             input = Regex.Replace(input, "!(\\[.*?\\])\\(.*?\\)", "[$1]"); // Images
             input = Regex.Replace(input, "\\[(.*?)\\]\\(.*?\\)", "$1"); // Links
-            input = Regex.Replace(input, "\\*\\*(.+?)\\*\\*", "*$1*"); // Bold (convert to underline)
+            input = Regex.Replace(input, "\\*\\*(.+?)\\*\\*", "*$1*"); // Bold (convert to singe asterisk)
             input = Regex.Replace(input, "~~(.+?)~~", "-$1-"); // Strikethrough
             return input;
         }
