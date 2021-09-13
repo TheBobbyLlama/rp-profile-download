@@ -35,7 +35,7 @@ local function ConvertNameToKey(name)
 	end
 	
 	local result = string.lower(name)
-	result = string.gsub(result, "[^%a%d]", "")
+	result = string.gsub(result, "[^%dA-Za-z]", "")
 	return result
 end
 
