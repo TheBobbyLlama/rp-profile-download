@@ -84,7 +84,7 @@ namespace RPProfileDownloader
         {
             input = Regex.Replace(input, "/\\/g", "\\\\"); // Backslashes
             input = Regex.Replace(input, "\\|", "||"); // Pipes
-            input = Regex.Replace(input, "\n", "\\n"); // New Lines
+            input = Regex.Replace(input, "(<br */?>|\n)", "\\n"); // New Lines
             input = Regex.Replace(input, "\"", "\\\""); // Quotes
             input = Regex.Replace(input, "&lt;", "<");
             input = Regex.Replace(input, "&gt;", ">");
