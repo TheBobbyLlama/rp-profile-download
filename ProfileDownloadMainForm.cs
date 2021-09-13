@@ -144,6 +144,8 @@ namespace RPProfileDownloader
 
         private void ProfileDownloadMainForm_Shown(object sender, EventArgs e)
         {
+            Hide();
+
             if (!Properties.Settings.Default.hasRunBefore)
             {
                 if (MessageBox.Show("Thank you for downloading the RP Profile Viewer addon!  This monitor program will need to be used to keep player profile information up to date.\n\nWould you like to place a shortcut on your desktop?", "First Time Setup", MessageBoxButtons.YesNo) == DialogResult.Yes)
