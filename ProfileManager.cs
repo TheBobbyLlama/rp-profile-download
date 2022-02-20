@@ -90,15 +90,11 @@ namespace RPProfileDownloader
             input = Regex.Replace(input, "&gt;", ">");
 
             // MARKDOWN FORMATTING
-            input = Regex.Replace(input, "#####\\s*(.+?)\\\\n", FormatHeaderText); // Header 5
-            input = Regex.Replace(input, "####\\s*(.+?)\\\\n", FormatHeaderText); // Header 4
-            input = Regex.Replace(input, "###\\s*(.+?)\\\\n", FormatHeaderText); // Header 3
-            input = Regex.Replace(input, "##\\s*(.+?)\\\\n", FormatHeaderText); // Header 2
-            input = Regex.Replace(input, "#\\s*(.+?)\\\\n", FormatHeaderText); // Header 1
+            input = Regex.Replace(input, "(^|\\\\n)#{1,5} ?(.+?\\\\n)", FormatHeaderText);
             input = Regex.Replace(input, "{(.+?)}", "$1"); // Custom formatting - {Name} for profile link.
             input = Regex.Replace(input, "!(\\[.*?\\])\\(.*?\\)", "[$1]"); // Images
             input = Regex.Replace(input, "\\[(.*?)\\]\\(.*?\\)", "$1"); // Links
-            input = Regex.Replace(input, "\\*\\*(.+?)\\*\\*", "*$1*"); // Bold (convert to singe asterisk)
+            input = Regex.Replace(input, "\\*\\*(.+?)\\*\\*", "*$1*"); // Bold (convert to single asterisk)
             input = Regex.Replace(input, "~~(.+?)~~", "-$1-"); // Strikethrough
             return input;
         }
@@ -108,7 +104,7 @@ namespace RPProfileDownloader
         /// </summary>
         private static string FormatHeaderText(Match input)
         {
-            return input.Groups[1].ToString().ToUpper() + "\\n";
+            return input.Groups[2].ToString().ToUpper();
         }
 
         public class ProfileData
