@@ -91,6 +91,18 @@ local function LocalizationHack(input)
 	end
 end
 
+-- Handler for the slash command/hotkey.  Defaults to showing local player, if applicable.
+function RPProfileViewer.DispatchToggleWindow()
+	local myName = GetUnitName("player")
+	local profileWindow = GetControl("RPProfileWindow")
+
+	if ((profileWindow:IsHidden()) and (CheckCharacterRegistered(myName))) then
+		RPProfileViewer.ToggleWindow(myName)
+	else
+		RPProfileViewer.ToggleWindow()
+	end
+end
+
 -- Shows the profile window, or hides it.  Shows the given character name if specified.
 function RPProfileViewer.ToggleWindow(charName)
 	local profileWindow = GetControl("RPProfileWindow")
@@ -293,7 +305,7 @@ end
 -- Initialization
 local function OnAddOnLoaded(eventCode, addOnName)
     if (addOnName == RPProfileViewer.Name) then
-		SLASH_COMMANDS["/rpprofilewindow"] = RPProfileViewer.ToggleWindow
+		SLASH_COMMANDS["/rpprofilewindow"] = RPProfileViewer.DispatchToggleWindow
 		
 		local profileWindow = GetControl("RPProfileWindow")
 		profileWindow:SetHidden( true )

@@ -3,7 +3,7 @@
 ## Author: The Bobby Llama
 ## AddOnVersion: 1
 ## Version: 1.0
-## APIVersion: 101031
+## APIVersion: 101033
 
 RPProfileViewer.lua
 ProfileMonitor\RPProfileData.lua

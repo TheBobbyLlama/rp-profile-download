@@ -2,7 +2,7 @@
 	<Layer name="SI_KEYBINDINGS_LAYER_GENERAL">
 		<Category name="RP Profile Viewer">
 		  <Action name="DISPLAY_RPV">
-			<Down>RPProfileViewer.ToggleWindow("") return true</Down>
+			<Down>RPProfileViewer.DispatchToggleWindow() return true</Down>
 		  </Action>	  
 		</Category>
 	</Layer>
