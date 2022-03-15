@@ -104,7 +104,7 @@ namespace RPProfileDownloader
         /// </summary>
         private static string FormatHeaderText(Match input)
         {
-            return input.Groups[2].ToString().ToUpper();
+            return input.Groups[2].ToString().ToUpper().Replace("\\N", "\\n");
         }
 
         public class ProfileData
