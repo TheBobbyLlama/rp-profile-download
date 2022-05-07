@@ -78,6 +78,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ErrorQueue.cs" />
     <Compile Include="ImageConverter.cs" />
     <Compile Include="ProfileDownloadMainForm.cs">
       <SubType>Form</SubType>

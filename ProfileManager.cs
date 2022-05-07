@@ -65,7 +65,7 @@ namespace RPProfileDownloader
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message, "An Error Occurred While Updating!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorQueue.Add(e.Message);
             }
 
             working = false;

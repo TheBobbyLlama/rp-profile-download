@@ -61,8 +61,20 @@ namespace RPProfileDownloader
         /// </summary>
         public void UpdateProfileData()
         {
-            notShowMe.ShowBalloonTip(5000);
-            ProfileManager.UpdateProfiles();
+            try
+            {
+                notShowMe.ShowBalloonTip(5000, "ESO RP Profiles", "Downloading character profiles...", ToolTipIcon.None);
+                ProfileManager.UpdateProfiles();
+            }
+            catch (Exception e)
+            {
+                ErrorQueue.Add(e.Message);
+            }
+
+            ErrorQueue.PurgeQueue().ForEach(message => 
+            {
+                notShowMe.ShowBalloonTip(5000, "Error Downloading Profile Info", message, ToolTipIcon.Error);
+            });
         }
 
         /// <summary>
