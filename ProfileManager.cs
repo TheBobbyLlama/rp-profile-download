@@ -42,6 +42,7 @@ namespace RPProfileDownloader
                     ConditionalPrint(output, "aliases", curData.aliases);
                     ConditionalPrint(output, "enemies", curData.enemies);
                     ConditionalPrint(output, "organizations", curData.organizations);
+                    ConditionalPrint(output, "alliances", curData.alliances);
                     ConditionalPrint(output, "relationships", curData.relationships);
                     ConditionalPrint(output, "residence", curData.residence);
                     ConditionalPrint(output, "description", curData.description);
