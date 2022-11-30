@@ -247,6 +247,20 @@ function RPProfileViewer.ShowCharacterInfo(character)
 			curControl:SetDimensions(nil, nil)
 			curControl:SetHidden(true)
 		end
+		-- OOC Info
+		tmpValue = characterData["oocInfo"]
+		curControl = GetControl("RPProfileWindowCharacterPanelXOOC")
+		if ((tmpValue ~= nil) and (tmpValue ~= "")) then
+			local textField = curControl:GetNamedChild("Text")
+			textField:SetText(tmpValue)
+			textField:SetTopLineIndex(0)
+			curControl:SetDimensions(nil, estimateFieldSize(tmpValue, 100, 24) + 48)
+			textField:SetDimensions(nil, estimateFieldSize(tmpValue, 100, 24) + 16)
+			curControl:SetHidden(false)
+		else
+			curControl:SetDimensions(nil, nil)
+			curControl:SetHidden(true)
+		end
 		-- Biography
 		tmpValue = characterData["biography"]
 		curControl = GetControl("RPProfileWindowCharacterPanelXBiography")
@@ -254,8 +268,8 @@ function RPProfileViewer.ShowCharacterInfo(character)
 			local textField = curControl:GetNamedChild("Text")
 			textField:SetText(tmpValue)
 			textField:SetTopLineIndex(0)
-			curControl:SetDimensions(nil, estimateFieldSize(tmpValue, 100, 24) + 48)
-			textField:SetDimensions(nil, estimateFieldSize(tmpValue, 100, 24) + 16)
+			curControl:SetDimensions(nil, estimateFieldSize(tmpValue, 100, 24) + 72)
+			textField:SetDimensions(nil, estimateFieldSize(tmpValue, 100, 24) + 20)
 			curControl:SetHidden(false)
 		else
 			curControl:SetDimensions(nil, nil)

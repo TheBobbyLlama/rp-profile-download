@@ -46,6 +46,7 @@ namespace RPProfileDownloader
                     ConditionalPrint(output, "relationships", curData.relationships);
                     ConditionalPrint(output, "residence", curData.residence);
                     ConditionalPrint(output, "description", curData.description);
+                    ConditionalPrint(output, "oocInfo", curData.oocInfo);
                     ConditionalPrint(output, "biography", curData.biography);
 
                     if (!String.IsNullOrEmpty(curData.image))
@@ -120,6 +121,7 @@ namespace RPProfileDownloader
             public string residence { get; set; }
 
             public string description { get; set; }
+            public string oocInfo { get; set; }
             public string biography { get; set; }
             public string image { get; set; }
         }

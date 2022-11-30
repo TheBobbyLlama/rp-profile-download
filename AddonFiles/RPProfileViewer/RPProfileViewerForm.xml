@@ -238,21 +238,44 @@
 										</Texture>
 									</Controls>
 								</Control>
-						
-								<Control name="$(parent)Biography">
+								
+								<Control name="$(parent)OOC">
 									<Dimensions y="1" />
 									<Anchor point="TOPLEFT" relativeTo="$(parent)Description" relativePoint="BOTTOMLEFT" offsetY="16" />
 									<Anchor point="TOPRIGHT" relativeTo="$(parent)Description" relativePoint="BOTTOMRIGHT" offsetY="16" />
 									
 									<Controls>
-										<Label name="$(parent)Title" font="ZoFontHeader3" text="Biography">
+										<Label name="$(parent)Title" font="ZoFontHeader3" text="OOC Info">
 											<Anchor point="TOP" relativeTo="$(parent)" relativePoint="TOP" offsetX="16" offsetY="8" />
 										</Label>
 										
 										<EditBox name="$(parent)Text" font="ZoFontGame" editEnabled="false" maxInputCharacters="10000" multiLine="true" newLineEnabled="true">
 											<Dimensions y="100" />
-											<Anchor point="TOPLEFT" relativeTo="$(parent)" relativePoint="TOPLEFT" offsetX="16" offsetY="40" />
-											<Anchor point="TOPRIGHT" relativeTo="$(parent)" relativePoint="TOPRIGHT" offsetX="-16" offsetY="40" />
+											<Anchor point="TOPLEFT" relativeTo="$(parent)" relativePoint="TOPLEFT" offsetX="64" offsetY="40" />
+											<Anchor point="TOPRIGHT" relativeTo="$(parent)" relativePoint="TOPRIGHT" offsetX="-64" offsetY="40" />
+										</EditBox>
+										
+										<Texture name="$(parent)Divider" textureFile="/esoui/art/miscellaneous/horizontaldivider.dds" tier="HIGH">
+											<Dimensions x="600" y="4"/>
+											<Anchor point="TOP" relativeTo="$(parent)" relativePoint="BOTTOM" offsetY="8" />
+										</Texture>
+									</Controls>
+								</Control>
+						
+								<Control name="$(parent)Biography">
+									<Dimensions y="1" />
+									<Anchor point="TOPLEFT" relativeTo="$(parent)OOC" relativePoint="BOTTOMLEFT" offsetY="16" />
+									<Anchor point="TOPRIGHT" relativeTo="$(parent)OOC" relativePoint="BOTTOMRIGHT" offsetY="16" />
+									
+									<Controls>
+										<Label name="$(parent)Title" font="ZoFontHeader3" text="Biography">
+											<Anchor point="TOP" relativeTo="$(parent)" relativePoint="TOP" offsetX="16" offsetY="1" />
+										</Label>
+										
+										<EditBox name="$(parent)Text" font="ZoFontGame" editEnabled="false" maxInputCharacters="10000" multiLine="true" newLineEnabled="true">
+											<Dimensions y="100" />
+											<Anchor point="TOPLEFT" relativeTo="$(parent)" relativePoint="TOPLEFT" offsetX="16" offsetY="48" />
+											<Anchor point="TOPRIGHT" relativeTo="$(parent)" relativePoint="TOPRIGHT" offsetX="-16" offsetY="48" />
 										</EditBox>
 										
 										<Texture name="$(parent)Divider" textureFile="/esoui/art/miscellaneous/horizontaldivider.dds" tier="HIGH">
