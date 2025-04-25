@@ -28,7 +28,7 @@ local function pairsByKeys (t, f)
 	return iter
 end
 
--- Converts a character name to a Rollplay-style key by converting to lowercase and stripping out non-alphanumeric characters.
+-- Converts a character name to a key by converting to lowercase and stripping out non-alphanumeric characters.
 local function ConvertNameToKey(name)
 	if ((name == nil) or (string.sub(name, 1, 1) == "@")) then
 		return ""
@@ -53,7 +53,7 @@ local function CheckCharacterRegistered(name)
 	end
 end
 
--- These values come from the Rollplay DB as localization tokens, but I can't feed them directly into GetString.  RPV_StringLookup cheats it.
+-- These values come from the DB as localization tokens, but I can't feed them directly into GetString.  RPV_StringLookup cheats it.
 local function InitializeLocalizationHack()
 	RPV_StringLookup["ALIGNMENT_LG"] = GetString(RPV_ALIGNMENT_LG);
 	RPV_StringLookup["ALIGNMENT_NG"] = GetString(RPV_ALIGNMENT_NG);
@@ -285,7 +285,7 @@ end
 -- Opens a browser window to the current character's profile.
 function RPProfileViewer.LaunchProfileLink()
 	local nameControl = GetControl("RPProfileWindowCharacterPanelXCharacterName")
-	RequestOpenUnsafeURL("https://eso-rollplay.net/profile.html?character=" .. nameControl:GetText())
+	RequestOpenUnsafeURL("https://eso-profiles.net/view/" .. nameControl:GetText())
 end
 
 --Shissus ContextMenu Hack as he failed to implement this properly

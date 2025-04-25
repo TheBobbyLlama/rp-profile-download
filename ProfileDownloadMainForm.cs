@@ -196,9 +196,9 @@ namespace RPProfileDownloader
         {
             switch(e.ClickedItem.Text)
             {
-                case "ESO Rollplay Site":
+                case "ESO Profiles Site":
                     // Stack Overflow sorcery.
-                    Process.Start(new ProcessStartInfo("cmd", $"/c start https://eso-rollplay.net") { CreateNoWindow = true });
+                    Process.Start("https://eso-profiles.net");
                     break;
                 case "Update Profiles Now":
                     if (!IsDoingUpdate())

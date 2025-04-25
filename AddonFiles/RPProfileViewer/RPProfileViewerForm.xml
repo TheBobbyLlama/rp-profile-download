@@ -285,7 +285,7 @@
 									</Controls>
 								</Control>
 								
-								<Button name="$(parent)ProfileLink" font="ZoFontGame" text="|c4080C0View Profile on ESO-Rollplay.net|r">
+								<Button name="$(parent)ProfileLink" font="ZoFontGame" text="|c20A060View Profile on ESO-Profiles.net|r">
 									<Dimensions y="32" />
 									<Anchor point="TOPLEFT" relativeTo="$(parent)Biography" relativePoint="BOTTOMLEFT" offsetY="16" />
 									<Anchor point="TOPRIGHT" relativeTo="$(parent)Biography" relativePoint="BOTTOMRIGHT" offsetY="16" />

@@ -34,7 +34,7 @@ namespace RPProfileDownloader
             this.tmrClock = new System.Windows.Forms.Timer(this.components);
             this.notShowMe = new System.Windows.Forms.NotifyIcon(this.components);
             this.mnuTaskbar = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.mniVisitRollplay = new System.Windows.Forms.ToolStripMenuItem();
+            this.mniVisitWebsite = new System.Windows.Forms.ToolStripMenuItem();
             this.mniUpdateNow = new System.Windows.Forms.ToolStripMenuItem();
             this.mniUpdateOptions = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuUpdateIntervals = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -59,21 +59,21 @@ namespace RPProfileDownloader
             // mnuTaskbar
             // 
             this.mnuTaskbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mniVisitRollplay,
+            this.mniVisitWebsite,
             this.mniUpdateNow,
             this.mniUpdateOptions,
             this.mniExit});
             this.mnuTaskbar.Name = "mnuTaskbar";
-            this.mnuTaskbar.Size = new System.Drawing.Size(183, 92);
+            this.mnuTaskbar.Size = new System.Drawing.Size(183, 114);
             this.mnuTaskbar.Opening += new System.ComponentModel.CancelEventHandler(this.mnuTaskbar_Opening);
             this.mnuTaskbar.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.mnuTaskbar_ItemClicked);
             // 
-            // mniVisitRollplay
+            // mniVisitWebsite
             // 
-            this.mniVisitRollplay.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.mniVisitRollplay.Name = "mniVisitRollplay";
-            this.mniVisitRollplay.Size = new System.Drawing.Size(182, 22);
-            this.mniVisitRollplay.Text = "ESO Rollplay Site";
+            this.mniVisitWebsite.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.mniVisitWebsite.Name = "mniVisitWebsite";
+            this.mniVisitWebsite.Size = new System.Drawing.Size(182, 22);
+            this.mniVisitWebsite.Text = "ESO Profiles Site";
             // 
             // mniUpdateNow
             // 
@@ -130,7 +130,7 @@ namespace RPProfileDownloader
         private System.Windows.Forms.ToolStripMenuItem mniExit;
         private System.Windows.Forms.ToolStripMenuItem mniUpdateOptions;
         private System.Windows.Forms.ContextMenuStrip mnuUpdateIntervals;
-        private System.Windows.Forms.ToolStripMenuItem mniVisitRollplay;
+        private System.Windows.Forms.ToolStripMenuItem mniVisitWebsite;
     }
 }
 

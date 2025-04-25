@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 namespace RPProfileDownloader
 {
     /// <summary>
-    /// Used for pulling profile information from the ESO Rollplay system and converting it into a LUA file.
+    /// Used for pulling profile information from the ESO Profiles system and converting it into a LUA file.
     /// </summary>
     public static class ProfileManager
     {
