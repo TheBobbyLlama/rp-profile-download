@@ -64,7 +64,7 @@ namespace RPProfileDownloader
             this.mniUpdateOptions,
             this.mniExit});
             this.mnuTaskbar.Name = "mnuTaskbar";
-            this.mnuTaskbar.Size = new System.Drawing.Size(183, 114);
+            this.mnuTaskbar.Size = new System.Drawing.Size(183, 92);
             this.mnuTaskbar.Opening += new System.ComponentModel.CancelEventHandler(this.mnuTaskbar_Opening);
             this.mnuTaskbar.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.mnuTaskbar_ItemClicked);
             // 
@@ -91,7 +91,6 @@ namespace RPProfileDownloader
             // mnuUpdateIntervals
             // 
             this.mnuUpdateIntervals.Name = "mnuUpdateIntervals";
-            this.mnuUpdateIntervals.OwnerItem = this.mniUpdateOptions;
             this.mnuUpdateIntervals.Size = new System.Drawing.Size(61, 4);
             this.mnuUpdateIntervals.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.mnuUpdateIntervals_ItemClicked);
             // 

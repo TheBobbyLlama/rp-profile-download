@@ -51,7 +51,7 @@
     <StartupObject>RPProfileDownloader.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Rollplay.ico</ApplicationIcon>
+    <ApplicationIcon>eso-profiles.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Magick.NET-Q8-AnyCPU, Version=7.23.2.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=MSIL">
@@ -116,6 +116,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="eso-profiles.ico" />
     <Content Include="Rollplay.ico" />
   </ItemGroup>
   <ItemGroup>
