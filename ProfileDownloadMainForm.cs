@@ -168,7 +168,7 @@ namespace RPProfileDownloader
                         Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\RP Profile Viewer Monitor.lnk") as IWshRuntimeLibrary.IWshShortcut;
                     shortcut.TargetPath = Application.ExecutablePath;
                     shortcut.WindowStyle = 1;
-                    shortcut.Description = "Profile Monitor program for the RP Profile Viewer ESO addon.";
+                    shortcut.Description = "Downloader for the RP Profile Viewer ESO addon.";
                     shortcut.WorkingDirectory = Application.StartupPath;
                     shortcut.Save();
                 }

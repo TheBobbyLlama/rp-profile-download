@@ -4,7 +4,6 @@ using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
 using Newtonsoft.Json;
 
 namespace RPProfileDownloader
@@ -28,6 +27,7 @@ namespace RPProfileDownloader
             try
             {
                 string responseBody = await client.GetStringAsync("https://eso-roleplay.firebaseio.com/profiles.json");
+
                 StringBuilder output = new StringBuilder();
                 Dictionary<string, ProfileData> profileData = JsonConvert.DeserializeObject<Dictionary<string, ProfileData>>(responseBody);
 
@@ -90,6 +90,7 @@ namespace RPProfileDownloader
             input = Regex.Replace(input, "\"", "\\\""); // Quotes
             input = Regex.Replace(input, "&lt;", "<");
             input = Regex.Replace(input, "&gt;", ">");
+            input = Regex.Replace(input, "&nbsp;", " ");
 
             // MARKDOWN FORMATTING
             input = Regex.Replace(input, "(^|\\\\n)#{1,5} ?(.+?\\\\n)", FormatHeaderText);
